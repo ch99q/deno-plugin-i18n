@@ -1,6 +1,7 @@
-import { getLanguage } from "../../runtime.ts";
+import { t } from "../../runtime.ts";
 import Counter from "../islands/Counter.tsx";
 import Language from "../islands/Language.tsx";
+import Url from "../islands/Url.tsx";
 
 export default function Home() {
   return (
@@ -11,11 +12,12 @@ export default function Home() {
         alt="the fresh logo: a sliced lemon dripping with juice"
       />
       <p class="my-6">
-        Welcome to `fresh`. Try updating this message in the ./routes/index.tsx
-        file, and refresh.
+        {t("welcome")}
       </p>
+      <a href="/blog/my-super-article" hrefLang="da">Go to blog</a>
       <Counter start={3} />
-      <Language server={getLanguage()} />
+      <Language />
+      <Url />
     </div>
   );
 }

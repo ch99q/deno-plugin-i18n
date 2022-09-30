@@ -9,6 +9,7 @@
     "twind": "https://esm.sh/twind@0.16.17",
     "twind/": "https://esm.sh/twind@0.16.17/",
     "i18n": "../mod.ts",
-    "i18n/": "../"
+    "i18n/": "../",
+    "fluent": "https://deno.land/x/better_fluent@v1.0.0/mod.ts"
   }
 }

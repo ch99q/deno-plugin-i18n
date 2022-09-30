@@ -12,7 +12,6 @@ import twindConfig from "./twind.config.ts";
 
 import i18nPlugin from "../mod.ts";
 import i18nConfig from "./i18n.config.ts";
-
 export const { identify, override, plugin } = i18nPlugin(i18nConfig);
 
 await start(manifest, { plugins: [twindPlugin(twindConfig), plugin] });
