@@ -1,0 +1,1 @@
+content = Denne artikel's indhold kan findes i filen locales/blog/my-other-article.da.ftl

@@ -1,8 +1,11 @@
 import type { Plugin } from "$fresh/server.ts";
+import { walkSync } from "https://deno.land/std@0.150.0/fs/walk.ts";
 
-import { resolve } from "https://deno.land/std@0.150.0/path/mod.ts";
+import { resolve, relative } from "https://deno.land/std@0.150.0/path/mod.ts";
 
 import * as Cookies from "https://deno.land/std@0.154.0/http/cookie.ts";
+
+import { pathToPattern } from './utils.ts';
 
 export interface Language {
   /** The ISO code for the language */
@@ -87,7 +90,7 @@ export default function i18n(options: Options): I18n {
       name: "i18n",
 
       entrypoints: {
-        "i18n": `data:application/javascript,export default function(context) {window.i18n = context;document.cookie = 'frsh_lang=' + context.language + '; path=/';document.documentElement.setAttribute("lang", context.language);window.addEventListener("focus", function(event) {if(document.cookie.includes('frsh_lang=')) {const lang = document.cookie.split('frsh_lang=')[1].split(';')[0];if(lang !== context.language) {window.location.reload();}}});}`,
+        "main": `data:application/javascript,export default function(context) {window.i18n = context;document.cookie = 'frsh_lang=' + context.language + '; path=/';document.documentElement.setAttribute("lang", context.language);window.addEventListener("focus", function(event) {if(document.cookie.includes('frsh_lang=')) {const lang = document.cookie.split('frsh_lang=')[1].split(';')[0];if(lang !== context.language) {window.location.reload();}}});}`,
       },
 
       render(ctx) {
@@ -111,10 +114,35 @@ export default function i18n(options: Options): I18n {
         for (const lang of Object.keys(options.languages)) {
           try {
             locales[lang] = Deno.readTextFileSync(resolve("./locales", `${lang}.ftl`));
+
+
+            // Add locale based on route.
+            for(const e of walkSync(resolve("./locales"), {
+              includeDirs: false,
+              exts: [".ftl"],
+              skip: 
+                Object.keys(options.languages)
+                .map((lang) => new RegExp(`locales\/${lang}.ftl`)),
+            })) {
+              let path = "/" +relative("./locales", e.path).replace(new RegExp(`\.${lang}\.ftl`), "");
+
+              const langPath = window.__i18n_routes[lang].find(([file, _]) => file.startsWith(path))?.[1];
+              if(langPath) {
+                path = langPath;
+              }
+              
+              const pattern = new URLPattern(pathToPattern(path), url.origin);
+              
+              // Test if the pattern matches the URL.
+              if(pattern.test(url)) {
+                locales[lang] += "\n" + Deno.readTextFileSync(e.path);
+              }
+            }
           } catch {
             locales[lang] = Deno.readTextFileSync(resolve("./locales", `${options.fallback}.ftl`));
           }
         }
+
 
         window.i18n = {
           language,
@@ -185,7 +213,7 @@ export default function i18n(options: Options): I18n {
 
         return {
           scripts: [{
-            entrypoint: "i18n",
+            entrypoint: "main",
             state: {
               language,
               iso,

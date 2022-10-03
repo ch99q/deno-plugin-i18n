@@ -1,0 +1,1 @@
+content = Le contenu de cet article peut être trouvé dans le fichier locales/blog/my-super-article.fr.ftl

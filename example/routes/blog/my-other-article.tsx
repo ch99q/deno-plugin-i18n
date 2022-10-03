@@ -20,8 +20,8 @@ export default function MySuperArticle() {
 
 export const config: RouteConfig = {
   routeOverride: routes(import.meta.url, {
-    en: "/blog/my-super-article",
-    da: "/blog/min-super-artikel",
-    fr: "/blog/mon-super-article",
+    en: "/blog/my-other-article",
+    da: "/blog/min-anden-artikel",
+    fr: "/blog/mon-autre-article",
   })
 }

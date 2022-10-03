@@ -1,0 +1,1 @@
+welcome-description = Denne beskrivelse vil vises på alle artikler.

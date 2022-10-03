@@ -1,0 +1,1 @@
+content = Le contenu de cet article se trouve dans le fichier locales/blog/my-other-article.fr.ftl

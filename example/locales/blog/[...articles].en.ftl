@@ -1,0 +1,1 @@
+welcome-description = This description will appear on all articles.
